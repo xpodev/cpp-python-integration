@@ -6,8 +6,8 @@
 #include "./PyTypes.h"
 
 
-namespace GameCore {
-	namespace Python {
+namespace xpo {
+	namespace python {
 		template <class T = Object>
 		struct AutoObject : Object {
 			AutoObject(T object)

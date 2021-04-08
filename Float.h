@@ -8,8 +8,8 @@
 #include "./String.h"
 
 
-namespace GameCore {
-	namespace Python {
+namespace xpo {
+	namespace python {
 		struct Float : public Object {
 			Float(PyObject* pyObject)
 				: Object(PyFloat_Check(pyObject) ? pyObject : nullptr)

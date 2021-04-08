@@ -1,8 +1,8 @@
 #pragma once
 
 
-namespace GameCore {
-	namespace Python {
+namespace xpo {
+	namespace python {
 
 	}
 }

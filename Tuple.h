@@ -4,8 +4,8 @@
 #include "./Object.h"
 
 
-namespace GameCore {
-	namespace Python {
+namespace xpo {
+	namespace python {
 		struct Tuple;
 
 		template <Py_ssize_t C, typename T, typename... Ts>

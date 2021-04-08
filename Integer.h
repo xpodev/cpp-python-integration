@@ -7,8 +7,8 @@
 #include "./Object.h"
 
 
-namespace GameCore {
-	namespace Python {
+namespace xpo {
+	namespace python {
 		struct Integer : public Object {
 			Integer(PyObject* pyObject)
 				: Object(PyLong_Check(pyObject) ? pyObject : nullptr)

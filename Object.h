@@ -6,8 +6,8 @@
 #include <stdio.h>
 
 
-namespace GameCore {
-	namespace Python {
+namespace xpo {
+	namespace python {
 		// this struct is a wrapper over a PyObject*
 		struct Object {
 			Object(PyObject* pyObject)

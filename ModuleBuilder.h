@@ -6,8 +6,8 @@
 #include <vector>
 
 
-namespace GameCore {
-	namespace Python {
+namespace xpo {
+	namespace python {
 		template <class T>
 		concept IVarArgsFunction = requires (T t, PyObject * p) {
 			{ t(p, p) } -> std::convertible_to<PyObject*>;

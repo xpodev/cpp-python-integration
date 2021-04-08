@@ -4,8 +4,8 @@
 #include "./Tuple.h"
 
 
-namespace GameCore {
-	namespace Python {
+namespace xpo {
+	namespace python {
 		struct Callable : public Object {
 			Callable(PyObject* pyObject)
 				: Object(PyCallable_Check(pyObject) ? pyObject : nullptr)

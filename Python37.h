@@ -1,6 +1,6 @@
 #pragma once
 
-#define PY_VERSION 37
+#define X_PY_VERSION 37
 
 #include "./PythonCore.h"
 

@@ -3,7 +3,7 @@
 #undef _DEBUG
 #undef _module
 
-#ifdef PY_VERSION
+#ifdef X_PY_VERSION
 
 #define STR(x) #x
 #define XSTR(x) STR(x)
@@ -12,7 +12,7 @@
 #define _CONCAT(x,y) x##y
 #define CONCAT(x,y) _CONCAT(x,y)
 
-#define PYTHON_LIB_PATH CONCAT(CONCAT(./PythonVersions/P, PY_VERSION), CONCAT(/libs/python, PY_VERSION).lib)
+#define PYTHON_LIB_PATH CONCAT(/PythonLibs/python, X_PY_VERSION).lib
 
 #define AUTO_INCLUDE_LIB
 

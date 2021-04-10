@@ -127,6 +127,8 @@ void PyInit_ModuleInit_##name()
 
 #define DEFINE_MODULE(...) MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
+#define MODULE_INIT_FUNCTION_NAME(name) PyInit_##name
+
 #define DECALRE_MODULE_INIT(name) \
-PyMODINIT_FUNC PyInit_##name();
+PyMODINIT_FUNC MODULE_INIT_FUNCTION_NAME(name)()
 

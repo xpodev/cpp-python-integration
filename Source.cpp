@@ -1,8 +1,6 @@
-#define PY_VERSION 37
+#define X_PY_VERSION 37
 
 #include "PythonCore.h"
-
-#include "Python37.h"
 
 #include "Tuple.h"
 #include "Integer.h"

@@ -5,6 +5,7 @@
 #include "Tuple.h"
 #include "Integer.h"
 #include "Float.h"
+#include "List.h"
 #include "String.h"
 
 using namespace xpo::python;
@@ -53,13 +54,26 @@ int main() {
 	std::cout << b << std::endl;
 	std::cout << "valueA [global]: " << python.get_global("valueA") << std::endl;
 
-	std::cout << "something(1, 2, 3.0) -> " << python.run_string("muonline.something(1, 2, 3.0)") << std::endl;
+	//std::cout << "something(1, 2, 3.0) -> " << python.run_string("muonline.something((1, 2, 3.0))") << std::endl;
 	std::cout << "something2(1, 2, 3.0) -> " << python.run_string("muonline.something2(1, 2, 3.0)") << std::endl;
 
 	int result = python.run_file("test.py");
 	std::cout << "Python result: " << result << std::endl;
 
+	List ints{};
+	ints.append(Integer(10));
+	ints.append(String("muahahaha"));
+	ints.append(Integer(30));
+	ints.append(Integer(40));
+	ints.append(Integer(50));
+
 	std::cout << python.main_module().name() << std::endl;
+
+	std::cout << "size:" << ints.size() << '\n';
+
+	for (auto const item : ints) {
+		std::cout << item << '\n';
+	}
 	/*FILE* file = fopen("test.py", "r");
 	if (file) {
 		PyRun_SimpleFileEx(file, "test.py", 1);

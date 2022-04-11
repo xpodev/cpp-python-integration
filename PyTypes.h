@@ -5,3 +5,4 @@
 #include "./Module.h"
 #include "./Object.h"
 #include "./String.h"
+#include "./Tuple.h"

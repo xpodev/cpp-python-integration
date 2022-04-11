@@ -72,19 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\binya\source\repos\cpp-python-integration\cpp-python-integration\PythonVersions\P37\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\Neriya\C++\cpp-python-integration\PythonVersions\P39\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\binya\source\repos\cpp-python-integration\cpp-python-integration\PythonVersions\P37\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\Neriya\C++\cpp-python-integration\PythonVersions\P39\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\binya\source\repos\cpp-python-integration\cpp-python-integration\PythonVersions\P37\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\Neriya\C++\cpp-python-integration\PythonVersions\P39\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\binya\source\repos\cpp-python-integration\cpp-python-integration\PythonVersions\P37\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\Neriya\C++\cpp-python-integration\PythonVersions\P39\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -92,7 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -108,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -124,7 +124,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,7 +140,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,10 +153,13 @@
   <ItemGroup>
     <ClInclude Include="AutoObject.h" />
     <ClInclude Include="Callable.h" />
+    <ClInclude Include="Iterator.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="Float.h" />
     <ClInclude Include="IModule.h" />
     <ClInclude Include="Integer.h" />
     <ClInclude Include="IPython.h" />
+    <ClInclude Include="List.h" />
     <ClInclude Include="Module.h" />
     <ClInclude Include="ModuleBuilder.h" />
     <ClInclude Include="Object.h" />

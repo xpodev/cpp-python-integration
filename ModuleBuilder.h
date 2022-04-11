@@ -2,22 +2,15 @@
 
 #include "./PythonCore.h"
 
+#include "./Module.h"
+#include "./Utils.h"
+
 #include <functional>
 #include <vector>
 
 
 namespace xpo {
 	namespace python {
-		template <class T>
-		concept IVarArgsFunction = requires (T t, PyObject * p) {
-			{ t(p, p) } -> std::convertible_to<PyObject*>;
-		};
-
-		template <class T>
-		concept IKWArgsFunction = requires (T t, PyObject * p) {
-			{ t(p, p, p) } -> std::convertible_to<PyObject*>;
-		};
-
 		struct ModuleBuilder {
 			ModuleBuilder(char const* name, char const* doc = nullptr, Py_ssize_t size = -1)
 				: m_name(name)
@@ -27,12 +20,16 @@ namespace xpo {
 
 			}
 
-			template <IVarArgsFunction F>
-			void add_method(char const* name, F && function, char const* doc = nullptr) {
+			void add_method(char const* name, PyCFunction function, char const* doc = nullptr) {
 				PyMethodDef method_def = {
-					name, static_cast<PyCFunction>(function), METH_VARARGS, doc
+					name, function, METH_VARARGS, doc
 				};
 				m_methods.push_back(method_def);
+			}
+
+			template <IVarArgsFunction F>
+			void add_method(char const* name, F && function, char const* doc = nullptr) {
+				add_method(name, static_cast<PyCFunction>(function), doc);
 			}
 
 			template <IKWArgsFunction F>
@@ -43,6 +40,48 @@ namespace xpo {
 					name, static_cast<PyCFunction>(static_cast<void*>(function)), METH_VARARGS | METH_KEYWORDS, doc
 				};
 				m_methods.push_back(method_def);
+			}
+
+			template <PackedVarArgsFunctionObject F>
+			requires (IPackedVarArgsFunctionCall<F>)
+			void add_method(char const* name, char const* doc = nullptr) {
+				auto wrapper = [](PyObject* self, PyObject* args) {
+					Object result = F.m_function(Module(self), F.make_tuple(Tuple::from_args(args)));
+					if (result.is_none()) {
+						Py_RETURN_NONE;
+					}
+					return result.ptr();
+				};
+
+				add_method(name, (PyCFunction)wrapper, doc);
+			}
+
+			template <VarArgsFunctionObject F>
+			requires (IVarArgsFunctionCall<F>)
+			void add_method(char const* name, char const* doc = nullptr) {
+				auto wrapper = [](PyObject* self, PyObject* args) {
+					Object result = std::apply(F.m_function, std::tuple_cat(std::make_tuple(Module(self)), F.make_tuple(Tuple::from_args(args))));
+					if (result.is_none()) {
+						Py_RETURN_NONE;
+					}
+					return result.ptr();
+					Py_RETURN_NONE;
+				};
+
+				add_method(name, (PyCFunction)wrapper, doc);
+			}
+
+			template <Object(*function)(Module, Tuple)>
+			void add_method(char const* name, char const* doc = nullptr) {
+				auto wrapper = [](PyObject* self, PyObject* args) {
+					Object result = function(Module(self), Tuple::from_args(args));
+					if (result.is_none()) {
+						Py_RETURN_NONE;
+					}
+					return result.ptr();
+				};
+
+				add_method(name, (PyCFunction)wrapper, doc);
 			}
 
 			template <typename ...Ts>

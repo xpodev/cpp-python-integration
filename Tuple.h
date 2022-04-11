@@ -1,5 +1,7 @@
 #pragma once
 
+#include <tuple>
+
 #include "./AutoObject.h"
 #include "./Object.h"
 
@@ -21,6 +23,10 @@ namespace xpo {
 				return TupleUnpacker<C - 1, Ts...>(m_tuple).unpack(rest...);
 			}
 
+			std::tuple<T, Ts...> to_tuple() {
+				return std::tuple_cat(std::make_tuple(m_tuple.get(m_tuple.size() - C).to_native<T>()), TupleUnpacker<C - 1, Ts...>(m_tuple).to_tuple());
+			}
+
 		private:
 			Tuple& m_tuple;
 		};
@@ -37,6 +43,10 @@ namespace xpo {
 			bool unpack(T ptr) {
 				*ptr = m_tuple.get(m_tuple.size() - 1).to_native<std::remove_pointer_t<T>>();
 				return true;
+			}
+
+			std::tuple<T> to_tuple() {
+				return std::make_tuple(m_tuple.get(m_tuple.size() - 1).to_native<T>());
 			}
 
 		private:
@@ -95,6 +105,18 @@ namespace xpo {
 				return TupleUnpacker<sizeof...(Ts), Ts...>(*this).unpack(args...);
 			}
 
+			template <typename... Ts>
+			requires (sizeof...(Ts) > 0)
+			std::tuple<Ts...> unpack() noexcept {
+				return TupleUnpacker<sizeof...(Ts), Ts...>(*this).to_tuple();
+			}
+
+			template <typename... Ts>
+			requires (sizeof...(Ts) > 0)
+				std::tuple<Ts...> to_tuple() noexcept {
+				return unpack<Ts...>();
+			}
+
 			template <std::invocable<Object> T>
 			Tuple& foreach(T && function) {
 				for (int i = 0; i < m_size; ++i) {
@@ -131,8 +153,50 @@ namespace xpo {
 				return Tuple(Object(args).incref().ptr());
 			}
 
+			template <typename... Ts>
+			requires (sizeof...(Ts) > 0)
+			operator std::tuple<Ts...>() {
+				return unpack<Ts...>();
+			}
+
 		private:
 			Py_ssize_t m_size;
 		};
+
+		template <typename... Ts>
+		requires (sizeof...(Ts) > 0)
+		struct TypedTuple : public Tuple {
+			TypedTuple(Tuple const& tuple) : Tuple(tuple) {}
+
+			TypedTuple(PyObject* pyObject) : Tuple(pyObject) {}
+
+			std::tuple<Ts...> unpack() {
+				return Tuple::unpack<Ts...>();
+			}
+
+			template <size_t I>
+			typename std::tuple_element<I, TypedTuple<Ts...>>::type get() {
+				return Tuple::get(I).to_native<typename std::tuple_element<I, TypedTuple<Ts...>>::type>();
+			}
+		};
 	}
+}
+
+
+namespace std {
+	template <typename... Ts>
+	struct tuple_size<xpo::python::TypedTuple<Ts...>> {
+		static constexpr size_t value = sizeof...(Ts);
+	};
+
+	// recursive case
+	template <std::size_t I, class Head, class... Tail>
+	struct tuple_element<I, xpo::python::TypedTuple<Head, Tail...>>
+		: std::tuple_element<I - 1, xpo::python::TypedTuple<Tail...>> { };
+
+	// base case
+	template <class Head, class... Tail>
+	struct tuple_element<0, xpo::python::TypedTuple<Head, Tail...>> {
+		using type = Head;
+	};
 }

@@ -12,9 +12,9 @@
 #define _CONCAT(x,y) x##y
 #define CONCAT(x,y) _CONCAT(x,y)
 
-#define PYTHON_LIB_PATH CONCAT(/PythonLibs/python, X_PY_VERSION).lib
+#define PYTHON_LIB_PATH CONCAT(./PythonLibs/python, X_PY_VERSION).lib
 
-//#define AUTO_INCLUDE_LIB
+#define AUTO_INCLUDE_LIB
 
 #ifdef AUTO_INCLUDE_LIB
 #pragma comment(lib, XSTR(PYTHON_LIB_PATH))
@@ -32,6 +32,7 @@
 
 #include "./PythonCore.h"
 
+//#include "./Utils.h"
 #include "./Module.h"
 #include "./String.h"
 

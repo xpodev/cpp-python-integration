@@ -12,7 +12,7 @@ namespace xpo {
 
 		template <Py_ssize_t C, typename T, typename... Ts>
 		struct TupleUnpacker {
-			TupleUnpacker(Tuple& tuple)
+			TupleUnpacker(Tuple const& tuple)
 				: m_tuple(tuple)
 			{
 
@@ -28,13 +28,13 @@ namespace xpo {
 			}
 
 		private:
-			Tuple& m_tuple;
+			Tuple const& m_tuple;
 		};
 
 		/// Why do we need to specialize for both 0 and 1?
 		template <typename T>
 		struct TupleUnpacker<1, T> {
-			TupleUnpacker(Tuple& tuple)
+			TupleUnpacker(Tuple const& tuple)
 				: m_tuple(tuple)
 			{
 
@@ -50,12 +50,12 @@ namespace xpo {
 			}
 
 		private:
-			Tuple& m_tuple;
+			Tuple const& m_tuple;
 		};
 
 		template <typename T>
 		struct TupleUnpacker<0, T> {
-			TupleUnpacker(Tuple& tuple)
+			TupleUnpacker(Tuple const& tuple)
 			{}
 
 			bool unpack() {
@@ -65,15 +65,15 @@ namespace xpo {
 
 		struct Tuple : public Object
 		{
-			Tuple(PyObject* pyObject)
-				: Object(PyTuple_Check(pyObject) ? pyObject : nullptr)
+			Tuple(PyObject* pyObject) noexcept
+				: Object(PyTuple_Check(pyObject) ? pyObject : nullptr) 
 				, m_size(PyTuple_Size(pyObject))
 			{
 
 			}
 
 			template <Py_ssize_t Size>
-			Tuple()
+			Tuple() noexcept
 				: Object(PyTuple_New(Size))
 				, m_size(Size)
 			{
@@ -81,7 +81,7 @@ namespace xpo {
 			}
 
 			template <std::convertible_to<Object>... Ts>
-			Tuple(Ts ...args)
+			Tuple(Ts ...args) noexcept
 				: Object(PyTuple_Pack(static_cast<Py_ssize_t>(sizeof...(Ts)), std::forward<PyObject*>(args)...))
 				, m_size(sizeof...(Ts))
 			{
@@ -89,59 +89,59 @@ namespace xpo {
 			}
 
 			template <typename... Ts>
-			Tuple(Ts ...args)
+			Tuple(Ts ...args) noexcept
 				: Tuple(AutoObject(args)...)
 			{
 
 			}
 
-			~Tuple() {
+			~Tuple() noexcept {
 				decref_all();
 			}
 
 			template <std::bidirectional_iterator... Ts>
 			requires (sizeof...(Ts) > 0)
-			bool unpack(Ts ...args) {
+			bool unpack(Ts ...args) const noexcept {
 				return TupleUnpacker<sizeof...(Ts), Ts...>(*this).unpack(args...);
 			}
 
 			template <typename... Ts>
 			requires (sizeof...(Ts) > 0)
-			std::tuple<Ts...> unpack() noexcept {
+			std::tuple<Ts...> unpack() const noexcept {
 				return TupleUnpacker<sizeof...(Ts), Ts...>(*this).to_tuple();
 			}
 
 			template <typename... Ts>
 			requires (sizeof...(Ts) > 0)
-				std::tuple<Ts...> to_tuple() noexcept {
+			std::tuple<Ts...> to_tuple() const noexcept {
 				return unpack<Ts...>();
 			}
 
 			template <std::invocable<Object> T>
-			Tuple& foreach(T && function) {
+			Tuple const& foreach(T && function) const {
 				for (int i = 0; i < m_size; ++i) {
 					function(get(i));
 				}
 				return *this;
 			}
 
-			Tuple& incref_all() {
+			Tuple const& incref_all() const {
 				return foreach([](Object object) { object.incref(); });
 			}
 
-			Tuple& decref_all() {
+			Tuple const& decref_all() const {
 				return foreach([](Object object) { object.decref(); });
 			}
 
-			Py_ssize_t size() {
+			Py_ssize_t size() const {
 				return m_size;
 			}
 
-			Tuple slice(Py_ssize_t begin, Py_ssize_t end) {
+			Tuple slice(Py_ssize_t begin, Py_ssize_t end) const {
 				return Tuple(PyTuple_GetSlice(m_pyObject, begin, end));
 			}
 
-			Object get(Py_ssize_t index) {
+			Object get(Py_ssize_t index) const {
 				return Object(PyTuple_GetItem(m_pyObject, index));
 			}
 
@@ -149,7 +149,7 @@ namespace xpo {
 				return Object(PyTuple_GetItem(m_pyObject, index));
 			}
 
-			static Tuple from_args(PyObject* args) {
+			static Tuple const from_args(PyObject* args) {
 				return Tuple(Object(args).incref().ptr());
 			}
 
@@ -166,11 +166,11 @@ namespace xpo {
 		template <typename... Ts>
 		requires (sizeof...(Ts) > 0)
 		struct TypedTuple : public Tuple {
-			TypedTuple(Tuple const& tuple) : Tuple(tuple) {}
+			TypedTuple(Tuple const& tuple) noexcept : Tuple(tuple) {}
 
-			TypedTuple(PyObject* pyObject) : Tuple(pyObject) {}
+			TypedTuple(PyObject* pyObject) noexcept : Tuple(pyObject) {}
 
-			std::tuple<Ts...> unpack() {
+			std::tuple<Ts...> unpack() const {
 				return Tuple::unpack<Ts...>();
 			}
 

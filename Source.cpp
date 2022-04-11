@@ -53,6 +53,9 @@ int main() {
 	std::cout << b << std::endl;
 	std::cout << "valueA [global]: " << python.get_global("valueA") << std::endl;
 
+	std::cout << "something(1, 2, 3.0) -> " << python.run_string("muonline.something(1, 2, 3.0)") << std::endl;
+	std::cout << "something2(1, 2, 3.0) -> " << python.run_string("muonline.something2(1, 2, 3.0)") << std::endl;
+
 	int result = python.run_file("test.py");
 	std::cout << "Python result: " << result << std::endl;
 

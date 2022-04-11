@@ -47,7 +47,7 @@ struct VarArgsFunctionObject {
 
 	static constexpr inline std::tuple<Ts...> args() { return std::declval<std::tuple<Ts...>>(); }
 
-	inline std::tuple<Ts...> make_tuple(Tuple&& tuple) const { return tuple.to_tuple<Ts...>(); }
+	inline std::tuple<Ts...> make_tuple(Tuple const&& tuple) const { return tuple.to_tuple<Ts...>(); }
 
 	function_type m_function;
 };
@@ -67,7 +67,7 @@ struct PackedVarArgsFunctionObject {
 
 	static constexpr inline typed_tuple args() { return std::declval<typed_tuple>(); }
 
-	inline typed_tuple make_tuple(Tuple&& tuple) const { return typed_tuple(tuple.ptr()); }
+	inline typed_tuple make_tuple(Tuple const&& tuple) const { return typed_tuple(tuple.ptr()); }
 
 	function_type m_function;
 };

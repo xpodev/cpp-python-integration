@@ -32,7 +32,9 @@ static PyObject* say_hello(PyObject* self, PyObject* args, PyObject* kwargs) {
 }
 
 static Object something(Module self, Tuple args) {
-    auto [x, y, z] = args.unpack<int, int, float>();
+    Tuple inner = Tuple(Tuple(args[0].ptr())[0].ptr());
+    TypedTuple<int, int, float> typed(inner);
+    auto [x, y, z] = typed.unpack();
     std::cout << args.size() << x << ' ' << y << ' ' << z << std::endl;
     return Object::none();
 }
@@ -44,7 +46,7 @@ static Object something2(Module self, TypedTuple<int, int, float> args) {
 }
 
 static Object something3(Module self, int x, int y, float z) {
-    std::cout << x << '|' << y << '|' << z << std::endl;
+    std::cout << x << '<' << y << '<' << z << std::endl;
     return Object::none();
 }
 

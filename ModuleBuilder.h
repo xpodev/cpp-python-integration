@@ -65,7 +65,6 @@ namespace xpo {
 						Py_RETURN_NONE;
 					}
 					return result.ptr();
-					Py_RETURN_NONE;
 				};
 
 				add_method(name, (PyCFunction)wrapper, doc);

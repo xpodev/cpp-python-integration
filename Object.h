@@ -11,12 +11,12 @@ namespace xpo {
 	namespace python {
 		// this struct is a wrapper over a PyObject*
 		struct Object {
-			Object(PyObject* pyObject)
+			Object(PyObject* pyObject) noexcept
 				: m_pyObject(pyObject)
 			{
 			}
 
-			Object(Object const& pyObject)
+			Object(Object const& pyObject) noexcept
 				: Object(pyObject.m_pyObject)
 			{}
 
@@ -24,12 +24,12 @@ namespace xpo {
 				: Object(pyObject.m_pyObject)
 			{}
 
-			Object& incref() {
+			Object const& incref() const {
 				Py_INCREF(m_pyObject);
 				return *this;
 			}
 
-			Object& decref() {
+			Object const& decref() const {
 				Py_DECREF(m_pyObject);
 				return *this;
 			}
@@ -47,44 +47,44 @@ namespace xpo {
 			}
 
 			template <std::convertible_to<Object> T>
-			T as() {
+			T as() const {
 				return static_cast<T>(*this);
 			}
 
 			template <class T>
-			T to_native() {
+			T to_native() const {
 				return static_cast<T>(AutoObject<T>(*this));
 			}
 
-			bool has_attribute(Object name) {
+			bool has_attribute(Object name) const {
 				return PyObject_HasAttr(m_pyObject, name.m_pyObject);
 			}
 
-			bool has_attribute(char const* name) {
+			bool has_attribute(char const* name) const {
 				return PyObject_HasAttrString(m_pyObject, name);
 			}
 
-			Object get_attribute(Object name) {
+			Object get_attribute(Object name) const {
 				return Object(PyObject_GetAttr(m_pyObject, name.m_pyObject));
 			}
 
-			Object get_attribute(char const* name) {
+			Object get_attribute(char const* name) const {
 				return Object(PyObject_GetAttrString(m_pyObject, name));
 			}
 
-			bool set_attribute(Object name, Object value) {
+			bool set_attribute(Object name, Object value) const {
 				return !PyObject_SetAttr(m_pyObject, name, value);
 			}
 
-			bool set_attribute(char const* name, Object value) {
+			bool set_attribute(char const* name, Object value) const {
 				return !PyObject_SetAttrString(m_pyObject, name, value);
 			}
 
-			bool delete_attribute(Object name) {
+			bool delete_attribute(Object name) const {
 				return !PyObject_DelAttr(m_pyObject, name);
 			}
 
-			bool delete_attribute(char const* name) {
+			bool delete_attribute(char const* name) const {
 				return !PyObject_DelAttrString(m_pyObject, name);
 			}
 
@@ -133,7 +133,7 @@ namespace xpo {
 			}
 
 		protected:
-			PyObject* m_pyObject;
+			PyObject* const m_pyObject;
 		};
 	}
 }
